@@ -1,15 +1,25 @@
-const http = require("http");
-const fs = require("fs");
+const { application } = require("express");
 const express = require("express");
 const PORT = 8080;
 const app = express();
-const server = app.listen(PORT, () => {
-  console.log(
-    `Servidor http esta en el puerto ${server.address().port}`
-  );
-});
+app.use(express.static("public"));
+const routeProductos = express.Router();
+const routeId = express.Router();
+const routeNuevoProducto = express.Router();
+const routeActualiza = express.Router();
+const routeDelete = express.Router();
 
-server.on("error", (error) => console.log(`Error en servidor ${error}`));
+app.use("/api/productos", routeProductos);
+app.use("/api/productos/:id", routeId);
+app.use("/api/productos", routeNuevoProducto);
+app.use("/api/productos/:id", routeActualiza);
+app.use("/api/productos/:id", routeDelete);
+
+//routeProductos.use(express.json(), express.urlencoded({extended: true}))
+routeId.use(express.json(), express.urlencoded({ extended: true }));
+routeNuevoProducto.use(express.json(), express.urlencoded({ extended: true }));
+routeActualiza.use(express.json(), express.urlencoded({ extended: true }));
+routeDelete.use(express.json(), express.urlencoded({ extended: true }));
 
 class Contenedor {
   constructor(title, price, tumbnail, id) {
@@ -39,21 +49,57 @@ const producto3 = new Contenedor(
 );
 let productos = [];
 productos.push(producto1, producto2, producto3);
-let carrito = JSON.stringify(productos);
-try {
-  fs.writeFileSync("./productos.txt", carrito);
-} catch (error) {
-  console.log(error);
+
+////// TODOS LOS PRODUCTOS
+app.get("/api/productos", (req, res) => {
+  res.json(productos);
+});
+//////  POR ID
+function byId(id) {
+  url = "/api/producto/:" + id;
+  console.log(url, id);
+  app.get(url, (req, res) => {
+    res.send(productos[id - 1]);
+  });
+
+  console.log(productos[id - 1]);
 }
-app.get("/", (req, res) => {
-  res.send("Hola a Todos");
+
+//////// AGREGA PRODUCTO
+
+routeNuevoProducto.post("/guardar", (req, res) => {
+  console.log(req);
+  id = productos.length + 1;
+  productos.push(req.body);
+
+  res.json(productos);
 });
 
-app.get("/productos", (req, res) => {
-  res.send(productos);
-});
+////// DELETE
+function Elimina(id) {
+  url = "/api/producto/:" + id;
+  console.log(url, id);
+  app.delete(url, (req, res) => {
+    res.send(productos.filter((x) => x.id !== id));
+  });
+}
 
-num = Math.floor(Math.random() * 3);
-app.get("/productosrandom", (req, res) => {
-  res.send(productos[num]);
+/////PUT
+function Actualiza(id) {
+  url = "/api/producto/:" + id;
+  app.put(url, (req, res) => {
+    console.log("Put Recibido");
+    nuevo = productos.filter((x) => x.id == id);
+    res.json({
+      result: "ok",
+      id: req.params.id,
+      nuevo: req.body,
+    });
+  });
+}
+
+const server = app.listen(PORT, () => {
+  console.log(`Servidor http esta en el puerto ${server.address().port}`);
 });
+server.on("error", (error) => console.log(`Error en servidor ${error}`));
+ 
