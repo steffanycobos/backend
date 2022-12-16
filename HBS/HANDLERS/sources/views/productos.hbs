@@ -1,0 +1,17 @@
+<div class="container d-flex p-5">
+    <div class="jumbotron w-75 m-auto d-flex flex-column">
+        <h1 class="text-center">Tienda de productos</h1>
+        <a href="http://localhost:8080" class="align-self-center m-2">ir formulario de carga</a>
+        <div class="d-flex flex-column text-center justify-content-center border-top border-dark py-4">
+            {{#if items.length}}
+                {{#each items}}
+                <h5>Nombre: {{this.title}}</h5>
+                <img src="{{this.thumbnail}}" alt="" width="100" class="align-self-center">
+                <p> Precio: ${{this.price}}</p>
+                {{/each}}
+                {{else}}
+                <h1 class="alert alert-warning">No hay productos</h1>
+            {{/if}}
+        </div>
+    </div>
+</div>

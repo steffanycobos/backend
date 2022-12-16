@@ -1,0 +1,15 @@
+extends main.pug
+
+block productos
+    div(class="container d-flex p-5")
+        div(class="jumbotron w-75 m-auto d-flex flex-column")
+            h1(class="text-center")=title
+            a(href="http://localhost:8080" class="align-self-center m-2")=url
+            div(class="d-flex flex-column text-center justify-content-center border-top border-dark py-4")
+                if items.length
+                    each producto in items 
+                        h5=`Nombre: ${producto.title}`
+                        img(src=producto.thumbnail width="100" class="align-self-center")
+                        p=`$${producto.price}`
+                else
+                    h1(class="alert alert-warning") No tenemos Productos en este momento.

@@ -1,0 +1,15 @@
+extends main.pug 
+
+block formulario
+    div(class="container p-5")
+        div(class="jumbotron w-75 m-auto d-flex flex-column")
+            h1(class="text-center")=title
+            a(href="http://localhost:8080/productos" class="align-self-center")=url
+            form(action="/" method="post" class="d-flex flex-column align-self-center justify-content-center w-75")
+                label(for="title") Nombre del Producto:
+                input(type="text" name="title" id="title" placeholder="Nombre de producto")
+                label(for="price") Precio:
+                input(type="number" id="price" name="price" placeholder="Precio")
+                label(for="thumbnail") Link de imagen:
+                input(type="text" name="thumbnail" id="thumbnail" placeholder=" Link de imagen")
+                input(type="submit" class="btn btn-secondary mt-3")
